@@ -32,6 +32,8 @@ import ArchivePage from './pages/ArchivePage';
 import ProfilePage from './pages/ProfilePage';
 import AdminPage from './pages/AdminPage';
 import SettingsPage from './pages/SettingsPage';
+import CommunitiesPage from './pages/CommunitiesPage';
+import CommunityDetailPage from './pages/CommunityDetailPage';
 import NotFound from './pages/NotFound';
 
 const queryClient = new QueryClient();
