@@ -34,6 +34,7 @@ import AdminPage from './pages/AdminPage';
 import SettingsPage from './pages/SettingsPage';
 import CommunitiesPage from './pages/CommunitiesPage';
 import CommunityDetailPage from './pages/CommunityDetailPage';
+import CreateCommunityPage from './pages/CreateCommunityPage';
 import NotFound from './pages/NotFound';
 
 const queryClient = new QueryClient();
@@ -81,6 +82,7 @@ const App = () => {
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/communities" element={<CommunitiesPage />} />
                   <Route path="/communities/:id" element={<CommunityDetailPage />} />
+                  <Route path="/create-community" element={<CreateCommunityPage />} />
 
                   {/* Private routes with layout */}
                   <Route element={<AppLayout />}>
