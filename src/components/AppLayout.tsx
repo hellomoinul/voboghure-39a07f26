@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Outlet } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
 
 interface AppLayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
@@ -34,7 +34,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             transition: 'margin-left 0.3s ease-in-out',
           }}
         >
-          {children}
+          {children || <Outlet />}
         </motion.main>
       </div>
     </div>

@@ -39,7 +39,7 @@ function mapProfileToUser(profile: any): User {
     bio: '',
     socials: {},
     role: (profile.role || 'member') as UserRole,
-    joinedDate: profile.created_at || new Date().toISOString(),
+    joinedAt: profile.created_at || new Date().toISOString(),
     tripsJoined: 0,
     storiesPosted: 0,
     favoriteDestination: '',
