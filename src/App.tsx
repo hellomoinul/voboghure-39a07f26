@@ -32,6 +32,8 @@ import ArchivePage from './pages/ArchivePage';
 import ProfilePage from './pages/ProfilePage';
 import AdminPage from './pages/AdminPage';
 import SettingsPage from './pages/SettingsPage';
+import CommunitiesPage from './pages/CommunitiesPage';
+import CommunityDetailPage from './pages/CommunityDetailPage';
 import NotFound from './pages/NotFound';
 
 const queryClient = new QueryClient();
@@ -77,6 +79,8 @@ const App = () => {
                   <Route path="/update-password" element={<UpdatePasswordPage />} />
                   <Route path="/request-access" element={<RequestAccessPage />} />
                   <Route path="/about" element={<AboutPage />} />
+                  <Route path="/communities" element={<CommunitiesPage />} />
+                  <Route path="/communities/:id" element={<CommunityDetailPage />} />
 
                   {/* Private routes with layout */}
                   <Route element={<AppLayout />}>
