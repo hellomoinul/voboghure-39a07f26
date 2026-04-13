@@ -79,6 +79,8 @@ const App = () => {
                   <Route path="/update-password" element={<UpdatePasswordPage />} />
                   <Route path="/request-access" element={<RequestAccessPage />} />
                   <Route path="/about" element={<AboutPage />} />
+                  <Route path="/communities" element={<CommunitiesPage />} />
+                  <Route path="/communities/:id" element={<CommunityDetailPage />} />
 
                   {/* Private routes with layout */}
                   <Route element={<AppLayout />}>
