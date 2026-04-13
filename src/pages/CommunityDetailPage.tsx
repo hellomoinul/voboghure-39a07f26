@@ -88,7 +88,7 @@ export default function CommunityDetailPage() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 bg-green-500/10 rounded-lg px-4 py-3"
+                  className="flex items-center gap-2 text-sm text-primary bg-primary/10 rounded-lg px-4 py-3"
                 >
                   <CheckCircle2 className="h-5 w-5" />
                   <span>Join request sent. Waiting for admin approval.</span>

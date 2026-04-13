@@ -33,6 +33,7 @@ function mapProfileToUser(profile: any): User {
     id: profile.id,
     name: profile.name || profile.email || 'Member',
     nickname: profile.nickname || profile.email?.split('@')[0] || 'member',
+    email: profile.email || '',
     avatar:
       profile.avatar ||
       'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop',
@@ -40,10 +41,7 @@ function mapProfileToUser(profile: any): User {
     socials: {},
     role: (profile.role || 'member') as UserRole,
     joinedAt: profile.created_at || new Date().toISOString(),
-    tripsJoined: 0,
-    storiesPosted: 0,
-    favoriteDestination: '',
-    favoriteTrip: '',
+    stats: { trips: 0, stories: 0, photos: 0 },
   };
 }
 
