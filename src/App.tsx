@@ -8,6 +8,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { BrandProvider } from '@/contexts/BrandContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { CommunityProvider } from '@/contexts/CommunityContext';
 import { AppLayout } from '@/components/AppLayout';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 
@@ -35,6 +36,7 @@ import SettingsPage from './pages/SettingsPage';
 import CommunitiesPage from './pages/CommunitiesPage';
 import CommunityDetailPage from './pages/CommunityDetailPage';
 import CreateCommunityPage from './pages/CreateCommunityPage';
+import CommunityHomePage from './pages/CommunityHomePage';
 import NotFound from './pages/NotFound';
 
 const queryClient = new QueryClient();
@@ -71,6 +73,7 @@ const App = () => {
         <ThemeProvider>
           <BrandProvider>
             <AuthProvider>
+              <CommunityProvider>
               <BrowserRouter>
                 <Routes>
                   {/* Public routes */}
@@ -83,6 +86,7 @@ const App = () => {
                   <Route path="/communities" element={<CommunitiesPage />} />
                   <Route path="/communities/:id" element={<CommunityDetailPage />} />
                   <Route path="/create-community" element={<CreateCommunityPage />} />
+                  <Route path="/community-home" element={<Private><CommunityHomePage /></Private>} />
 
                   {/* Private routes with layout */}
                   <Route element={<AppLayout />}>
@@ -203,6 +207,7 @@ const App = () => {
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
+              </CommunityProvider>
             </AuthProvider>
           </BrandProvider>
         </ThemeProvider>

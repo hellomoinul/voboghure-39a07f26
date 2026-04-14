@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBrand } from '@/contexts/BrandContext';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { CommunitySwitcher } from '@/components/CommunitySwitcher';
 import {
   Bell, LogOut, User, ChevronDown, Shield,
 } from 'lucide-react';
@@ -46,6 +47,11 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
             {brand.communityName}— {brand.communityNameBn}
           </span>
         </Link>
+
+        {/* Community Switcher (authenticated only) */}
+        {isAuthenticated && !isPublicRoute && (
+          <CommunitySwitcher />
+        )}
 
         {/* Public nav links */}
         {!isAuthenticated && (
