@@ -14,7 +14,127 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      communities: {
+        Row: {
+          code: string
+          cover_image: string | null
+          created_at: string
+          created_by: string
+          description: string
+          description_bn: string | null
+          id: string
+          logo: string | null
+          member_count: number
+          name: string
+          name_bn: string | null
+          tagline: string | null
+          theme_color: string | null
+          type: Database["public"]["Enums"]["community_type"]
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          cover_image?: string | null
+          created_at?: string
+          created_by: string
+          description: string
+          description_bn?: string | null
+          id?: string
+          logo?: string | null
+          member_count?: number
+          name: string
+          name_bn?: string | null
+          tagline?: string | null
+          theme_color?: string | null
+          type?: Database["public"]["Enums"]["community_type"]
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          cover_image?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string
+          description_bn?: string | null
+          id?: string
+          logo?: string | null
+          member_count?: number
+          name?: string
+          name_bn?: string | null
+          tagline?: string | null
+          theme_color?: string | null
+          type?: Database["public"]["Enums"]["community_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      community_join_requests: {
+        Row: {
+          community_id: string
+          created_at: string
+          id: string
+          status: Database["public"]["Enums"]["join_request_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          community_id: string
+          created_at?: string
+          id?: string
+          status?: Database["public"]["Enums"]["join_request_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          community_id?: string
+          created_at?: string
+          id?: string
+          status?: Database["public"]["Enums"]["join_request_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_join_requests_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_members: {
+        Row: {
+          community_id: string
+          id: string
+          joined_at: string
+          role: Database["public"]["Enums"]["community_role"]
+          user_id: string
+        }
+        Insert: {
+          community_id: string
+          id?: string
+          joined_at?: string
+          role?: Database["public"]["Enums"]["community_role"]
+          user_id: string
+        }
+        Update: {
+          community_id?: string
+          id?: string
+          joined_at?: string
+          role?: Database["public"]["Enums"]["community_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_members_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +143,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      community_role: "member" | "community_admin"
+      community_type: "private" | "invite_only"
+      join_request_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +272,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      community_role: ["member", "community_admin"],
+      community_type: ["private", "invite_only"],
+      join_request_status: ["pending", "approved", "rejected"],
+    },
   },
 } as const
