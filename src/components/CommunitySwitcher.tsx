@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
-import { ChevronDown, Plus, Compass } from 'lucide-react';
+import { ChevronDown, Plus, Compass, Loader2 } from 'lucide-react';
 import { useCommunity } from '@/contexts/CommunityContext';
-import { mockCommunities } from '@/data/communityData';
+import { DbCommunity } from '@/lib/communityService';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 
 export function CommunitySwitcher() {
-  const { activeCommunity, setActiveCommunity, joinedCommunities } = useCommunity();
+  const { activeCommunity, setActiveCommunity, joinedCommunities, loading } = useCommunity();
 
   return (
     <DropdownMenu>
@@ -22,7 +22,17 @@ export function CommunitySwitcher() {
         <div className="px-3 py-2 border-b border-border">
           <p className="text-xs font-medium text-muted-foreground">Your Communities</p>
         </div>
-        {joinedCommunities.map(c => (
+        {loading && (
+          <div className="flex items-center justify-center py-4">
+            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+          </div>
+        )}
+        {!loading && joinedCommunities.length === 0 && (
+          <div className="px-3 py-4 text-center">
+            <p className="text-xs text-muted-foreground">No communities yet</p>
+          </div>
+        )}
+        {!loading && joinedCommunities.map(c => (
           <DropdownMenuItem
             key={c.id}
             onClick={() => setActiveCommunity(c)}
@@ -31,7 +41,7 @@ export function CommunitySwitcher() {
             <span className="text-lg">{c.logo}</span>
             <div className="min-w-0">
               <p className="text-sm font-medium truncate">{c.name}</p>
-              <p className="text-xs text-muted-foreground">{c.memberCount} members</p>
+              <p className="text-xs text-muted-foreground">{c.member_count} members</p>
             </div>
           </DropdownMenuItem>
         ))}

@@ -1,45 +1,53 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
-import { mockCommunities, Community } from '@/data/communityData';
-
-type MembershipStatus = 'not-joined' | 'pending' | 'joined';
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { DbCommunity, fetchUserMemberships } from '@/lib/communityService';
 
 interface CommunityState {
-  activeCommunity: Community | null;
-  setActiveCommunity: (community: Community | null) => void;
-  joinedCommunities: Community[];
-  getMembershipStatus: (communityId: string) => MembershipStatus;
-  requestJoin: (communityId: string) => void;
+  activeCommunity: DbCommunity | null;
+  setActiveCommunity: (community: DbCommunity | null) => void;
+  joinedCommunities: DbCommunity[];
+  loading: boolean;
+  refreshMemberships: () => Promise<void>;
 }
 
 const CommunityContext = createContext<CommunityState | undefined>(undefined);
 
-// Mock: first community is "joined", rest are not
-const DEFAULT_JOINED_IDS = ['voboghure'];
-const DEFAULT_PENDING_IDS: string[] = [];
-
 export function CommunityProvider({ children }: { children: ReactNode }) {
-  const [activeCommunity, setActiveCommunity] = useState<Community | null>(
-    mockCommunities.find(c => c.id === 'voboghure') || null
-  );
-  const [joinedIds, setJoinedIds] = useState<string[]>(DEFAULT_JOINED_IDS);
-  const [pendingIds, setPendingIds] = useState<string[]>(DEFAULT_PENDING_IDS);
+  const { user, isAuthenticated, isDemo } = useAuth();
+  const [activeCommunity, setActiveCommunity] = useState<DbCommunity | null>(null);
+  const [joinedCommunities, setJoinedCommunities] = useState<DbCommunity[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const joinedCommunities = mockCommunities.filter(c => joinedIds.includes(c.id));
-
-  const getMembershipStatus = (communityId: string): MembershipStatus => {
-    if (joinedIds.includes(communityId)) return 'joined';
-    if (pendingIds.includes(communityId)) return 'pending';
-    return 'not-joined';
-  };
-
-  const requestJoin = (communityId: string) => {
-    if (!joinedIds.includes(communityId) && !pendingIds.includes(communityId)) {
-      setPendingIds(prev => [...prev, communityId]);
+  const refreshMemberships = useCallback(async () => {
+    if (!user || isDemo) {
+      setJoinedCommunities([]);
+      setActiveCommunity(null);
+      return;
     }
-  };
+    setLoading(true);
+    try {
+      const memberships = await fetchUserMemberships(user.id);
+      const communities = memberships.map(m => m.communities).filter(Boolean);
+      setJoinedCommunities(communities);
+      // Auto-select first if no active
+      if (!activeCommunity && communities.length > 0) {
+        setActiveCommunity(communities[0]);
+      }
+    } catch (err) {
+      console.error('Failed to load memberships:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [user, isDemo]);
+
+  useEffect(() => {
+    if (isAuthenticated && !isDemo) {
+      refreshMemberships();
+    }
+  }, [isAuthenticated, isDemo, refreshMemberships]);
 
   return (
-    <CommunityContext.Provider value={{ activeCommunity, setActiveCommunity, joinedCommunities, getMembershipStatus, requestJoin }}>
+    <CommunityContext.Provider value={{ activeCommunity, setActiveCommunity, joinedCommunities, loading, refreshMemberships }}>
       {children}
     </CommunityContext.Provider>
   );
