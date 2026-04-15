@@ -127,3 +127,110 @@ export async function createJoinRequest(communityId: string, userId: string) {
     .insert({ community_id: communityId, user_id: userId });
   if (error) throw error;
 }
+
+
+// প্রোজেক্টের শেষে এই ফাংশনগুলো যোগ করুন
+
+export const getLatestCommunityData = async (communityId: string) => {
+  const now = new Date().toISOString();
+
+  // ১. আসন্ন ৩টি ইভেন্ট আনা
+  const { data: events, error: eventError } = await supabase
+    .from('events')
+    .select('*')
+    .eq('community_id', communityId)
+    .gt('event_date', now)
+    .order('event_date', { ascending: true })
+    .limit(3);
+
+  // ২. সাম্প্রতিক ৪টি স্টোরি আনা (মেম্বার ইনফো সহ)
+  const { data: stories, error: storyError } = await supabase
+    .from('stories')
+    .select('*, profiles(username, avatar_url)')
+    .eq('community_id', communityId)
+    .order('created_at', { ascending: false })
+    .limit(4);
+
+  if (eventError || storyError) {
+    console.error("Error fetching home data:", eventError || storyError);
+  }
+
+  return { events: events || [], stories: stories || [] };
+};
+
+// এই ফাংশনটি মেম্বার সংখ্যা গণনা করবে
+export const getCommunityMemberCount = async (communityId: string) => {
+  const { count, error } = await supabase
+    .from('community_members') // আপনার টেবিল নাম যদি আলাদা হয় জানাবেন
+    .select('*', { count: 'exact', head: true })
+    .eq('community_id', communityId);
+
+  if (error) {
+    console.error("Error fetching member count:", error);
+    return 0;
+  }
+  return count || 0;
+};
+
+// রিয়েল-টাইম মেম্বার আপডেট লিসেনার
+export const subscribeToMemberChanges = (communityId: string, callback: () => void) => {
+  return supabase
+    .channel('community_members_changes')
+    .on(
+      'postgres_changes',
+      {
+        event: '*', // জয়েন বা লিভ যেকোনো কিছু হলেই
+        schema: 'public',
+        table: 'community_members',
+        filter: `community_id=eq.${communityId}`
+      },
+      () => {
+        callback(); // ডাটা চেঞ্জ হলে এই ফাংশনটি কল হবে
+      }
+    )
+    .subscribe();
+};
+
+// একটি নির্দিষ্ট ইভেন্টের ডিটেইলস নিয়ে আসা
+export const getEventDetails = async (eventId: string) => {
+  const { data, error } = await supabase
+    .from('events')
+    .select(`
+      *,
+      communities(name, logo),
+      event_gallery(*),
+      stories(*)
+    `)
+    .eq('id', eventId)
+    .single();
+
+  if (error) {
+    console.error("Error fetching event details:", error);
+    return null;
+  }
+  return data;
+};
+
+// একটি নির্দিষ্ট কমিউনিটির সব মেম্বারদের লিস্ট নিয়ে আসা
+export const getCommunityMembers = async (communityId: string) => {
+  const { data, error } = await supabase
+    .from('community_members')
+    .select(`
+      user_id,
+      role,
+      profiles:user_id (
+        id,
+        full_name,
+        avatar_url,
+        bio,
+        designation
+      )
+    `)
+    .eq('community_id', communityId);
+
+  if (error) {
+    console.error("Error fetching members:", error);
+    return [];
+  }
+  return data;
+};
