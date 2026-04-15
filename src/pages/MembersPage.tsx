@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'; // লিঙ্কিং এর জন্য
 import { useCommunity } from '@/contexts/CommunityContext';
 import { getCommunityMembers } from '@/lib/communityService';
 import { Loader2, Search, UserCircle } from 'lucide-react';
@@ -27,7 +28,7 @@ export default function MembersPage() {
     m.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (isLoading) return <div className="flex justify-center py-20"><Loader2 className="animate-spin" /></div>;
+  if (isLoading) return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-primary" /></div>;
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
@@ -46,26 +47,30 @@ export default function MembersPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredMembers.map((member) => (
-          <Card key={member.user_id} className="overflow-hidden hover:border-primary/50 transition-colors">
-            <CardContent className="p-4 flex flex-col items-center text-center space-y-3">
-              <div className="h-20 w-20 rounded-full overflow-hidden bg-secondary">
-                {member.profiles?.avatar_url ? (
-                  <img src={member.profiles.avatar_url} alt={member.profiles.full_name} className="h-full w-full object-cover" />
-                ) : (
-                  <UserCircle className="h-full w-full text-muted-foreground/20" />
+          <Link to={`/members/${member.user_id}`} key={member.user_id}> {/* ডাইনামিক রুট */}
+            <Card className="overflow-hidden hover:border-primary/50 hover:shadow-md transition-all cursor-pointer h-full">
+              <CardContent className="p-4 flex flex-col items-center text-center space-y-3">
+                <div className="h-20 w-20 rounded-full overflow-hidden bg-secondary border-2 border-transparent hover:border-primary/20 transition-all">
+                  {member.profiles?.avatar_url ? (
+                    <img src={member.profiles.avatar_url} alt={member.profiles.full_name} className="h-full w-full object-cover" />
+                  ) : (
+                    <UserCircle className="h-full w-full text-muted-foreground/20" />
+                  )}
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm group-hover:text-primary transition-colors">
+                    {member.profiles?.full_name || "Anonymous"}
+                  </h3>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">{member.role}</p>
+                </div>
+                {member.profiles?.designation && (
+                  <p className="text-[11px] text-primary bg-primary/5 px-2 py-0.5 rounded border border-primary/10 w-fit">
+                    {member.profiles.designation}
+                  </p>
                 )}
-              </div>
-              <div>
-                <h3 className="font-semibold text-sm">{member.profiles?.full_name || "Anonymous"}</h3>
-                <p className="text-xs text-muted-foreground uppercase tracking-tighter">{member.role}</p>
-              </div>
-              {member.profiles?.designation && (
-                <p className="text-[11px] text-primary bg-primary/5 px-2 py-0.5 rounded border border-primary/10">
-                  {member.profiles.designation}
-                </p>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
     </div>

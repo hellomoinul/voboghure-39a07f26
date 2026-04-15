@@ -38,6 +38,8 @@ import CommunityDetailPage from './pages/CommunityDetailPage';
 import CreateCommunityPage from './pages/CreateCommunityPage';
 import CommunityHomePage from './pages/CommunityHomePage';
 import NotFound from './pages/NotFound';
+import UserProfilePage from './pages/UserProfilePage';
+import AdminRequestsPage from './pages/AdminRequestsPage';
 
 const queryClient = new QueryClient();
 
@@ -110,6 +112,8 @@ const App = () => {
                       <Route path="/profile" element={<Private><ProfilePage /></Private>} />
                       <Route path="/settings" element={<Private><SettingsPage /></Private>} />
                       <Route path="/admin" element={<Private><AdminPage /></Private>} />
+                      <Route path="/members/:id" element={<UserProfilePage />} />
+                      <Route path="/admin/requests" element={<AdminRequestsPage />} />
                     </Route>
 
                     <Route path="*" element={<NotFound />} />
