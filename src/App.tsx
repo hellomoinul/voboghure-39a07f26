@@ -87,7 +87,7 @@ const App = () => {
                   <Route path="/communities" element={<CommunitiesPage />} />
                   <Route path="/communities/:id" element={<CommunityDetailPage />} />
                   <Route path="/create-community" element={<CreateCommunityPage />} />
-                  <Route path="/community-home" element={<Private><CommunityHomePage /></Private>} />
+                  <Route path="/community-home" element={<Private><CommunityGuard><CommunityHomePage /></CommunityGuard></Private>} />
 
                   {/* Private routes with layout */}
                   <Route element={<AppLayout />}>
