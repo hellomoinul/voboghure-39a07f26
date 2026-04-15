@@ -13,7 +13,6 @@ import { AppLayout } from '@/components/AppLayout';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { CommunityGuard } from '@/components/guards/CommunityGuard';
 
-// Pages
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
@@ -48,12 +47,12 @@ const Private = ({ children }: { children: React.ReactNode }) => (
 
 const App = () => {
   useEffect(() => {
-    async function testSupabase() {
-      const { data, error } = await supabase.auth.getSession();
-      console.log('🔥 Supabase connected:', { data, error });
-    }
+    const initializeApp = async () => {
+      await supabase.auth.getSession();
+      await supabase.from("communities").select("*").limit(1);
+    };
 
-    testSupabase();
+    initializeApp();
 
     const hash = window.location.hash || '';
     const isRecoveryLink =
@@ -74,145 +73,49 @@ const App = () => {
         <ThemeProvider>
           <BrandProvider>
             <AuthProvider>
-              <CommunityProvider>
-              <BrowserRouter>
-                <Routes>
-                  {/* Public routes */}
-                  <Route path="/" element={<LandingPage />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                  <Route path="/update-password" element={<UpdatePasswordPage />} />
-                  <Route path="/request-access" element={<RequestAccessPage />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/communities" element={<CommunitiesPage />} />
-                  <Route path="/communities/:id" element={<CommunityDetailPage />} />
-                  <Route path="/create-community" element={<CreateCommunityPage />} />
-                  <Route path="/community-home" element={<Private><CommunityGuard><CommunityHomePage /></CommunityGuard></Private>} />
+              <BrowserRouter 
+                future={{ 
+                  v7_startTransition: true, 
+                  v7_relativeSplatPath: true 
+                }}
+              >
+                <CommunityProvider>
+                  <Routes>
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                    <Route path="/update-password" element={<UpdatePasswordPage />} />
+                    <Route path="/request-access" element={<RequestAccessPage />} />
+                    <Route path="/about" element={<AboutPage />} />
+                    <Route path="/communities" element={<CommunitiesPage />} />
+                    <Route path="/communities/:id" element={<CommunityDetailPage />} />
+                    <Route path="/create-community" element={<CreateCommunityPage />} />
+                    <Route 
+                      path="/community-home" 
+                      element={<Private><CommunityGuard><CommunityHomePage /></CommunityGuard></Private>} 
+                    />
 
-                  {/* Private routes with layout */}
-                  <Route element={<AppLayout />}>
-                    <Route
-                      path="/dashboard"
-                      element={
-                        <Private>
-                          <DashboardPage />
-                        </Private>
-                      }
-                    />
-                    <Route
-                      path="/events"
-                      element={
-                        <Private>
-                          <CommunityGuard>
-                            <EventsPage />
-                          </CommunityGuard>
-                        </Private>
-                      }
-                    />
-                    <Route
-                      path="/events/:id"
-                      element={
-                        <Private>
-                          <EventDetailPage />
-                        </Private>
-                      }
-                    />
-                    <Route
-                      path="/stories"
-                      element={
-                        <Private>
-                          <CommunityGuard>
-                            <StoriesPage />
-                          </CommunityGuard>
-                        </Private>
-                      }
-                    />
-                    <Route
-                      path="/stories/:id"
-                      element={
-                        <Private>
-                          <StoryDetailPage />
-                        </Private>
-                      }
-                    />
-                    <Route
-                      path="/gallery"
-                      element={
-                        <Private>
-                          <GalleryPage />
-                        </Private>
-                      }
-                    />
-                    <Route
-                      path="/members"
-                      element={
-                        <Private>
-                          <MembersPage />
-                        </Private>
-                      }
-                    />
-                    <Route
-                      path="/timeline"
-                      element={
-                        <Private>
-                          <TimelinePage />
-                        </Private>
-                      }
-                    />
-                    <Route
-                      path="/map"
-                      element={
-                        <Private>
-                          <MapPage />
-                        </Private>
-                      }
-                    />
-                    <Route
-                      path="/upcoming"
-                      element={
-                        <Private>
-                          <UpcomingPage />
-                        </Private>
-                      }
-                    />
-                    <Route
-                      path="/archive"
-                      element={
-                        <Private>
-                          <ArchivePage />
-                        </Private>
-                      }
-                    />
-                    <Route
-                      path="/profile"
-                      element={
-                        <Private>
-                          <ProfilePage />
-                        </Private>
-                      }
-                    />
-                    <Route
-                      path="/settings"
-                      element={
-                        <Private>
-                          <SettingsPage />
-                        </Private>
-                      }
-                    />
-                    <Route
-                      path="/admin"
-                      element={
-                        <Private>
-                          <AdminPage />
-                        </Private>
-                      }
-                    />
-                  </Route>
+                    <Route element={<AppLayout />}>
+                      <Route path="/dashboard" element={<Private><DashboardPage /></Private>} />
+                      <Route path="/events" element={<Private><CommunityGuard><EventsPage /></CommunityGuard></Private>} />
+                      <Route path="/events/:id" element={<Private><EventDetailPage /></Private>} />
+                      <Route path="/stories" element={<Private><CommunityGuard><StoriesPage /></CommunityGuard></Private>} />
+                      <Route path="/stories/:id" element={<Private><StoryDetailPage /></Private>} />
+                      <Route path="/gallery" element={<Private><GalleryPage /></Private>} />
+                      <Route path="/members" element={<Private><MembersPage /></Private>} />
+                      <Route path="/timeline" element={<Private><TimelinePage /></Private>} />
+                      <Route path="/map" element={<Private><MapPage /></Private>} />
+                      <Route path="/upcoming" element={<Private><UpcomingPage /></Private>} />
+                      <Route path="/archive" element={<Private><ArchivePage /></Private>} />
+                      <Route path="/profile" element={<Private><ProfilePage /></Private>} />
+                      <Route path="/settings" element={<Private><SettingsPage /></Private>} />
+                      <Route path="/admin" element={<Private><AdminPage /></Private>} />
+                    </Route>
 
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </CommunityProvider>
               </BrowserRouter>
-              </CommunityProvider>
             </AuthProvider>
           </BrandProvider>
         </ThemeProvider>
