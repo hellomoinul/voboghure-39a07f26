@@ -4,10 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useBrand } from '@/contexts/BrandContext';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { CommunitySwitcher } from '@/components/CommunitySwitcher';
-
-// ✅ যেহেতু এটা export default, তাই কোনো { } হবে না
-import NotificationBell from '@/components/NotificationBell'; 
-
+import NotificationBell from '@/components/NotificationBell';
 import { 
   LogOut, User, ChevronDown, Menu, X 
 } from 'lucide-react';
@@ -44,7 +41,11 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
       <div className="flex h-16 items-center px-4 md:px-6">
         {/* Sidebar toggle for private routes */}
         {isAuthenticated && !isPublicRoute && (
-          <button onClick={onToggleSidebar} className="mr-3 p-2 rounded-lg hover:bg-secondary transition-colors">
+          <button
+            onClick={onToggleSidebar}
+            aria-label="Toggle sidebar"
+            className="mr-3 p-2 rounded-lg hover:bg-secondary transition-colors"
+          >
             <Menu className="h-5 w-5" />
           </button>
         )}
@@ -53,6 +54,7 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
         {!isAuthenticated && (
           <button
             onClick={() => setMobileMenuOpen(prev => !prev)}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             className="md:hidden mr-3 p-2 rounded-lg hover:bg-secondary transition-colors"
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -99,16 +101,19 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
 
           {isAuthenticated ? (
             <>
-              {/* ✅ Real-time Notifications Bell */}
+              {/* Real-time Notifications Bell */}
               <NotificationBell />
 
               {/* User menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-secondary transition-colors outline-none">
+                  <button
+                    aria-label="Open user menu"
+                    className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-secondary transition-colors outline-none"
+                  >
                     <img 
                       src={user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name}`} 
-                      alt={user?.name} 
+                      alt={user?.name ?? 'User avatar'}
                       className="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20" 
                     />
                     <ChevronDown className="h-4 w-4 text-muted-foreground hidden sm:block" />
