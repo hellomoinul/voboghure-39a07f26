@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBrand } from '@/contexts/BrandContext';
+import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { events, stories, members } from '@/data/mockData';
 import { ArrowRight, Mountain, BookOpen, Shield, Sparkles, Play } from 'lucide-react';
@@ -38,7 +39,8 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="relative">
+    <div className="relative min-h-screen bg-background bg-mesh">
+      <Navbar />
       {/* Hero */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
