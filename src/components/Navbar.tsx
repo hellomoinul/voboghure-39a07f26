@@ -1,10 +1,11 @@
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBrand } from '@/contexts/BrandContext';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { CommunitySwitcher } from '@/components/CommunitySwitcher';
 import {
-  Bell, LogOut, User, ChevronDown, Shield,
+  Bell, LogOut, User, ChevronDown, Menu, X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { notifications } from '@/data/mockData';
@@ -17,12 +18,18 @@ interface NavbarProps {
   sidebarOpen?: boolean;
 }
 
+const publicLinks = [
+  { to: '/', label: 'Home' },
+  { to: '/about', label: 'About' },
+];
+
 export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
   const { user, isAuthenticated, isDemo, logout } = useAuth();
   const { brand } = useBrand();
   const location = useLocation();
   const navigate = useNavigate();
   const unreadCount = notifications.filter(n => !n.read).length;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isPublicRoute = ['/', '/login', '/request-access', '/about'].includes(location.pathname);
 
@@ -40,6 +47,16 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
           </button>
         )}
 
+        {/* Mobile menu toggle for public routes (unauthenticated) */}
+        {!isAuthenticated && (
+          <button
+            onClick={() => setMobileMenuOpen(prev => !prev)}
+            className="md:hidden mr-3 p-2 rounded-lg hover:bg-secondary transition-colors"
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        )}
+
         {/* Logo */}
         <Link to={isAuthenticated ? '/dashboard' : '/'} className="flex items-center gap-2 mr-6">
           <span className="text-2xl leading-none">{brand.logo}</span>
@@ -53,13 +70,10 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
           <CommunitySwitcher />
         )}
 
-        {/* Public nav links */}
+        {/* Public nav links - desktop */}
         {!isAuthenticated && (
           <nav className="hidden md:flex items-center gap-1 flex-1">
-            {[
-              { to: '/', label: 'Home' },
-              { to: '/about', label: 'About' },
-            ].map(link => (
+            {publicLinks.map(link => (
               <Link
                 key={link.to}
                 to={link.to}
@@ -85,7 +99,7 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
           </div>
         )}
 
-        {/* Theme toggle */}
+        {/* Theme toggle - always visible */}
         <ThemeToggle />
 
         {isAuthenticated ? (
@@ -142,11 +156,39 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
         ) : (
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" onClick={() => navigate('/login')} className="text-muted-foreground hover:text-foreground">
-              <Shield className="mr-1.5 h-3.5 w-3.5" /> Admin Login
+              Login
             </Button>
           </div>
         )}
       </div>
+
+      {/* Mobile menu - public routes */}
+      {!isAuthenticated && mobileMenuOpen && (
+        <nav className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-xl px-4 py-3 space-y-1">
+          {publicLinks.map(link => (
+            <Link
+              key={link.to}
+              to={link.to}
+              onClick={() => setMobileMenuOpen(false)}
+              className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                location.pathname === link.to
+                  ? 'text-primary bg-primary/10'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => { setMobileMenuOpen(false); navigate('/login'); }}
+            className="w-full justify-start text-muted-foreground hover:text-foreground mt-1"
+          >
+            Login
+          </Button>
+        </nav>
+      )}
     </header>
   );
 }
