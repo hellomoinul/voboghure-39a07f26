@@ -11,6 +11,7 @@ import { ThemeProvider } from '@/contexts/ThemeContext';
 import { CommunityProvider } from '@/contexts/CommunityContext';
 import { AppLayout } from '@/components/AppLayout';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { CommunityGuard } from '@/components/guards/CommunityGuard';
 
 // Pages
 import LandingPage from './pages/LandingPage';
@@ -86,7 +87,7 @@ const App = () => {
                   <Route path="/communities" element={<CommunitiesPage />} />
                   <Route path="/communities/:id" element={<CommunityDetailPage />} />
                   <Route path="/create-community" element={<CreateCommunityPage />} />
-                  <Route path="/community-home" element={<Private><CommunityHomePage /></Private>} />
+                  <Route path="/community-home" element={<Private><CommunityGuard><CommunityHomePage /></CommunityGuard></Private>} />
 
                   {/* Private routes with layout */}
                   <Route element={<AppLayout />}>
@@ -102,7 +103,9 @@ const App = () => {
                       path="/events"
                       element={
                         <Private>
-                          <EventsPage />
+                          <CommunityGuard>
+                            <EventsPage />
+                          </CommunityGuard>
                         </Private>
                       }
                     />
@@ -118,7 +121,9 @@ const App = () => {
                       path="/stories"
                       element={
                         <Private>
-                          <StoriesPage />
+                          <CommunityGuard>
+                            <StoriesPage />
+                          </CommunityGuard>
                         </Private>
                       }
                     />
