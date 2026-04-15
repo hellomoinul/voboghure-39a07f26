@@ -11,6 +11,7 @@ import { ThemeProvider } from '@/contexts/ThemeContext';
 import { CommunityProvider } from '@/contexts/CommunityContext';
 import { AppLayout } from '@/components/AppLayout';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { CommunityGuard } from '@/components/guards/CommunityGuard';
 
 // Pages
 import LandingPage from './pages/LandingPage';
