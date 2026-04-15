@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Mountain, Heart, Users, Compass } from 'lucide-react';
+import { Navbar } from '@/components/Navbar';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -11,7 +12,9 @@ const fadeUp = {
 
 export default function AboutPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-16">
+    <div className="min-h-screen bg-background bg-mesh">
+      <Navbar />
+      <div className="max-w-4xl mx-auto px-4 py-16">
       <motion.div initial="hidden" animate="visible" custom={0} variants={fadeUp} className="text-center mb-16">
         <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">
           About <span className="glow-text">ভবঘুরে</span>
@@ -68,6 +71,7 @@ export default function AboutPage() {
             and build excitement for what's ahead while cherishing what's behind.
           </p>
         </motion.div>
+      </div>
       </div>
     </div>
   );
