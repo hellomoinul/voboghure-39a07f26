@@ -430,3 +430,20 @@ export const getEventImages = async (eventId: string) => {
   if (error) return [];
   return data;
 };
+
+export const getPublicProfile = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select(`
+      *,
+      event_participants (
+        count
+      )
+    `)
+    .eq('id', userId)
+    .single();
+
+  if (error) throw error;
+  return data;
+};
+

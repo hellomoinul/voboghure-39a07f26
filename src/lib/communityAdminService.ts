@@ -10,10 +10,11 @@ export interface JoinRequestWithUser {
 
 export interface CommunityMemberRow {
   id: string;
-  community_id: string;
   user_id: string;
-  role: 'member' | 'community_admin';
+  community_id: string;
+  role: 'member' | 'community_admin' | 'admin' | 'moderator' | 'pending'; // এখানে সম্ভাব্য সব রোল যোগ করুন
   joined_at: string;
+  // ... অন্যান্য কলাম
 }
 
 export async function fetchPendingRequests(communityId: string) {

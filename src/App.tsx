@@ -38,7 +38,6 @@ import CommunityDetailPage from './pages/CommunityDetailPage';
 import CreateCommunityPage from './pages/CreateCommunityPage';
 import CommunityHomePage from './pages/CommunityHomePage';
 import NotFound from './pages/NotFound';
-import UserProfilePage from './pages/UserProfilePage';
 import AdminRequestsPage from './pages/AdminRequestsPage';
 
 const queryClient = new QueryClient();
@@ -83,6 +82,7 @@ const App = () => {
               >
                 <CommunityProvider>
                   <Routes>
+                    {/* Public Routes */}
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -92,11 +92,14 @@ const App = () => {
                     <Route path="/communities" element={<CommunitiesPage />} />
                     <Route path="/communities/:id" element={<CommunityDetailPage />} />
                     <Route path="/create-community" element={<CreateCommunityPage />} />
+                    
+                    {/* Community Home - Protected */}
                     <Route 
                       path="/community-home" 
                       element={<Private><CommunityGuard><CommunityHomePage /></CommunityGuard></Private>} 
                     />
 
+                    {/* App Layout - Main Protected Routes */}
                     <Route element={<AppLayout />}>
                       <Route path="/dashboard" element={<Private><DashboardPage /></Private>} />
                       <Route path="/events" element={<Private><CommunityGuard><EventsPage /></CommunityGuard></Private>} />
@@ -109,13 +112,17 @@ const App = () => {
                       <Route path="/map" element={<Private><MapPage /></Private>} />
                       <Route path="/upcoming" element={<Private><UpcomingPage /></Private>} />
                       <Route path="/archive" element={<Private><ArchivePage /></Private>} />
-                      <Route path="/profile" element={<Private><ProfilePage /></Private>} />
                       <Route path="/settings" element={<Private><SettingsPage /></Private>} />
                       <Route path="/admin" element={<Private><AdminPage /></Private>} />
-                      <Route path="/members/:id" element={<UserProfilePage />} />
-                      <Route path="/admin/requests" element={<AdminRequestsPage />} />
+                      <Route path="/admin/requests" element={<Private><AdminRequestsPage /></Private>} />
+                      
+                      {/* Dynamic Profile Routes */}
+                      <Route path="/profile" element={<Private><ProfilePage /></Private>} />
+                      <Route path="/profile/:userId" element={<Private><ProfilePage /></Private>} />
+                      <Route path="/members/:userId" element={<Private><ProfilePage /></Private>} />
                     </Route>
 
+                    {/* 404 Route */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </CommunityProvider>
