@@ -49,22 +49,23 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
   const showBack = shouldShowBack(location.pathname);
   const isAdmin = user?.role === 'admin';
 
-  // রুট চেঞ্জ হলে মেনু ক্লোজ করার লজিক
+  // মেনু ক্লোজ করার লজিক
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
-      {/* মোবাইল মেনুর বাইরে টাচ করলে ক্লোজ হওয়ার ওভারলে */}
+      {/* Outside Click Fix: মেনুর বাইরে ক্লিক করলে বন্ধ হবে */}
       {mobileMenuOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-background/20 backdrop-blur-sm md:hidden" 
+          className="fixed inset-0 z-40 bg-black/5 backdrop-blur-[2px] md:hidden" 
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
       <div className="flex h-16 items-center px-4 md:px-6 relative z-50">
+        {/* Back Button */}
         {showBack && (
           <button
             onClick={() => navigate(-1)}
@@ -76,28 +77,25 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
           </button>
         )}
 
-        {/* সাইডবার টগল বাটন */}
-        {isAuthenticated && !isPublicRoute && !showBack && (
+        {/* SINGLE MENU BUTTON: ডাবল হ্যামবার্গার সমস্যার সমাধান */}
+        {!showBack && (
           <button
-            onClick={onToggleSidebar}
-            aria-label="Open sidebar"
-            title="Open sidebar"
+            onClick={() => {
+              if (isAuthenticated && !isPublicRoute) {
+                onToggleSidebar?.(); // লগইন থাকলে মেইন সাইডবার টগল হবে
+              } else {
+                setMobileMenuOpen(prev => !prev); // না থাকলে মোবাইল ড্রপডাউন মেনু খুলবে
+              }
+            }}
+            aria-label="Toggle menu"
+            title="Menu"
             className="mr-3 p-2 rounded-lg hover:bg-secondary transition-colors"
           >
-            <Menu className="h-5 w-5" />
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         )}
 
-        {/* মোবাইল হ্যামবার্গার মেনু টগল */}
-        <button
-          onClick={() => setMobileMenuOpen(prev => !prev)}
-          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          title={mobileMenuOpen ? "Close menu" : "Open menu"}
-          className="md:hidden mr-3 p-2 rounded-lg hover:bg-secondary transition-colors"
-        >
-          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
-
+        {/* Logo */}
         <Link to={isAuthenticated ? '/dashboard' : '/'} className="flex items-center gap-2 mr-6">
           <span className="text-2xl leading-none">{brand.logo}</span>
           <span className="font-serif text-xl font-bold tracking-tight hidden sm:block">
@@ -105,7 +103,12 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
           </span>
         </Link>
 
-        {isAuthenticated && !isPublicRoute && <CommunitySwitcher />}
+        {/* Desktop View Switcher & Nav */}
+        {isAuthenticated && !isPublicRoute && (
+          <div className="hidden md:block">
+            <CommunitySwitcher />
+          </div>
+        )}
 
         <nav className="hidden md:flex items-center gap-1 flex-1">
           {!isAuthenticated && publicLinks.map(link => (
@@ -121,10 +124,11 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
           ))}
         </nav>
 
-        <div className="flex-1 md:hidden" />
+        <div className="flex-1" />
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
+          
           {isAuthenticated ? (
             <>
               <NotificationBell />
@@ -144,24 +148,24 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 bg-card shadow-xl">
-                  <div className="px-3 py-2">
+                  <div className="px-3 py-2 text-foreground">
                     <p className="text-sm font-semibold">{user?.name}</p>
                     <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
                   </div>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate(`/members/${user?.id}`)}>
+                  <DropdownMenuItem onClick={() => navigate(`/members/${user?.id}`)} className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" /> My Profile
                   </DropdownMenuItem>
                   
-                  {/* অ্যাডমিন অপশন শুধুমাত্র এখানে রাখা হয়েছে */}
+                  {/* Admin Panel শুধুমাত্র এখানে থাকবে */}
                   {isAdmin && (
-                    <DropdownMenuItem onClick={() => navigate('/admin')} className="text-primary font-medium">
+                    <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer text-primary font-medium">
                       <ShieldCheck className="mr-2 h-4 w-4" /> Admin Panel
                     </DropdownMenuItem>
                   )}
                   
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => { logout(); navigate('/'); }} className="text-destructive">
+                  <DropdownMenuItem onClick={() => { logout(); navigate('/'); }} className="cursor-pointer text-destructive">
                     <LogOut className="mr-2 h-4 w-4" /> Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -175,9 +179,9 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
         </div>
       </div>
 
-      {/* মোবাইল ড্রপডাউন মেনু (বডির বাইরে টাচ করলে এটি ক্লোজ হবে) */}
-      {mobileMenuOpen && (
-        <nav className="md:hidden border-t border-border/50 bg-background px-4 py-4 space-y-2 animate-in slide-in-from-top-2">
+      {/* Mobile Menu Dropdown */}
+      {!isAuthenticated && mobileMenuOpen && (
+        <nav className="md:hidden border-t border-border/50 bg-background px-4 py-4 space-y-2">
           {publicLinks.map(link => (
             <Link
               key={link.to}
@@ -187,12 +191,9 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
               {link.label}
             </Link>
           ))}
-          
-          {!isAuthenticated && (
-            <Button className="w-full mt-4" onClick={() => navigate('/login')}>
-              Login
-            </Button>
-          )}
+          <Button className="w-full mt-4" onClick={() => navigate('/login')}>
+            Login
+          </Button>
         </nav>
       )}
     </header>
