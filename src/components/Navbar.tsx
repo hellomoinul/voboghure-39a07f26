@@ -6,7 +6,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { CommunitySwitcher } from '@/components/CommunitySwitcher';
 import NotificationBell from '@/components/NotificationBell';
 import { 
-  LogOut, User, ChevronDown, Menu, X, ArrowLeft
+  LogOut, User, ChevronDown, Menu, X, ArrowLeft, Settings, ShieldCheck 
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,7 +27,6 @@ const publicLinks = [
   { to: '/about', label: 'About' },
 ];
 
-// Routes that should show a back button (sub-pages)
 const backButtonRoutes = [
   '/about', '/request-access', '/forgot-password', '/update-password',
   '/create-community', '/community-home',
@@ -35,7 +34,6 @@ const backButtonRoutes = [
 
 function shouldShowBack(pathname: string): boolean {
   if (backButtonRoutes.includes(pathname)) return true;
-  // Dynamic routes like /communities/:id, /events/:id, /stories/:id, /members/:id, /profile/:id
   if (/^\/(communities|events|stories|members|profile)\/[^/]+$/.test(pathname)) return true;
   return false;
 }
@@ -49,11 +47,21 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
 
   const isPublicRoute = ['/', '/login', '/request-access', '/about'].includes(location.pathname);
   const showBack = shouldShowBack(location.pathname);
+  
+  // Logic: Admin check
+  const isAdmin = user?.role === 'admin';
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
+      {/* Logical Overlay for Outside Click (Mobile) */}
+      {!isAuthenticated && mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 z-[-1] bg-transparent" 
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
       <div className="flex h-16 items-center px-4 md:px-6">
-        {/* Back button for sub-pages */}
         {showBack && (
           <button
             onClick={() => navigate(-1)}
@@ -64,7 +72,6 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
           </button>
         )}
 
-        {/* Sidebar toggle for private routes */}
         {isAuthenticated && !isPublicRoute && !showBack && (
           <button
             onClick={onToggleSidebar}
@@ -75,7 +82,6 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
           </button>
         )}
 
-        {/* Mobile menu toggle for public routes */}
         {!isAuthenticated && !showBack && (
           <button
             onClick={() => setMobileMenuOpen(prev => !prev)}
@@ -86,20 +92,17 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
           </button>
         )}
 
-        {/* Logo */}
         <Link to={isAuthenticated ? '/dashboard' : '/'} className="flex items-center gap-2 mr-6">
           <span className="text-2xl leading-none">{brand.logo}</span>
           <span className="font-serif text-xl font-bold tracking-tight hidden sm:block">
-            {brand.communityName}— {brand.communityNameBn}
+            {brand.communityName}
           </span>
         </Link>
 
-        {/* Community Switcher */}
         {isAuthenticated && !isPublicRoute && (
           <CommunitySwitcher />
         )}
 
-        {/* Public nav links */}
         {!isAuthenticated && (
           <nav className="hidden md:flex items-center gap-1 flex-1">
             {publicLinks.map(link => (
@@ -121,24 +124,20 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
         <div className="flex-1" />
 
         <div className="flex items-center gap-2">
-          {/* Theme toggle */}
           <ThemeToggle />
 
           {isAuthenticated ? (
             <>
-              {/* Real-time Notifications Bell */}
               <NotificationBell />
 
-              {/* User menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    aria-label="Open user menu"
                     className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-secondary transition-colors outline-none"
                   >
                     <img 
                       src={user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name}`} 
-                      alt={user?.name ?? 'User avatar'}
+                      alt="avatar"
                       className="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20" 
                     />
                     <ChevronDown className="h-4 w-4 text-muted-foreground hidden sm:block" />
@@ -150,9 +149,22 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
                     <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
                   </div>
                   <DropdownMenuSeparator />
+                  
                   <DropdownMenuItem onClick={() => navigate(`/members/${user?.id}`)} className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" /> My Profile
                   </DropdownMenuItem>
+
+                  <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
+                    <Settings className="mr-2 h-4 w-4" /> Settings
+                  </DropdownMenuItem>
+
+                  {/* Logic: Show Admin Panel only to Admins, positioned after Settings */}
+                  {isAdmin && (
+                    <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer text-primary font-medium">
+                      <ShieldCheck className="mr-2 h-4 w-4" /> Admin Panel
+                    </DropdownMenuItem>
+                  )}
+
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => { logout(); navigate('/'); }} className="cursor-pointer text-destructive focus:bg-destructive/10">
                     <LogOut className="mr-2 h-4 w-4" /> Logout
@@ -160,7 +172,11 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
-          ) : null}
+          ) : (
+            <Button variant="default" size="sm" onClick={() => navigate('/login')} className="hidden md:flex">
+              Login
+            </Button>
+          )}
         </div>
       </div>
 
@@ -181,6 +197,9 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
               {link.label}
             </Link>
           ))}
+          <Button variant="ghost" className="w-full justify-start mt-2" onClick={() => navigate('/login')}>
+            Login
+          </Button>
         </nav>
       )}
     </header>
