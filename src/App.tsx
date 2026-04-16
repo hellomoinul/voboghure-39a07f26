@@ -74,12 +74,7 @@ const App = () => {
         <ThemeProvider>
           <BrandProvider>
             <AuthProvider>
-              <BrowserRouter 
-                future={{ 
-                  v7_startTransition: true, 
-                  v7_relativeSplatPath: true 
-                }}
-              >
+              <BrowserRouter>
                 <CommunityProvider>
                   <Routes>
                     {/* Public Routes */}

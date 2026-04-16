@@ -1,24 +1,24 @@
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, type Transition } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBrand } from '@/contexts/BrandContext';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { events, stories, members } from '@/data/mockData';
-import { ArrowRight, Mountain, BookOpen, Shield, Sparkles, Play } from 'lucide-react';
+import { ArrowRight, Mountain, BookOpen, Shield, Sparkles, Play, Plus, KeyRound } from 'lucide-react';
 import { useMemo } from 'react';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
     opacity: 1, y: 0,
-    transition: { delay: i * 0.15, duration: 0.6, ease: 'easeOut' },
+    transition: { delay: i * 0.15, duration: 0.6, ease: [0, 0, 0.58, 1] } as Transition,
   }),
 };
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { loginAsDemo } = useAuth();
+  const { loginAsDemo, isAuthenticated } = useAuth();
   const { brand } = useBrand();
 
   const handleDemoAccess = () => {
@@ -74,35 +74,58 @@ export default function LandingPage() {
               Where every event becomes a story, every story becomes a memory, and every memory stays alive forever.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button
-                size="lg"
-                onClick={() => navigate('/login')}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 h-12 text-base font-semibold"
-              >
-                Member Login <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={handleDemoAccess}
-                className="border-primary/30 text-primary hover:bg-primary/10 px-8 h-12 text-base"
-              >
-                <Play className="mr-2 h-4 w-4" /> Try Demo
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => navigate('/request-access')}
-                className="border-primary/30 text-primary hover:bg-primary/10 px-8 h-12 text-base"
-              >
-                Request Membership
-              </Button>
-            </div>
+            {/* CTAs change based on auth state */}
+            {isAuthenticated ? (
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Button
+                  size="lg"
+                  onClick={() => navigate('/create-community')}
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 h-12 text-base font-semibold"
+                >
+                  <Plus className="mr-2 h-4 w-4" /> Create a Community
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => navigate('/communities')}
+                  className="border-primary/30 text-primary hover:bg-primary/10 px-8 h-12 text-base"
+                >
+                  <KeyRound className="mr-2 h-4 w-4" /> Join a Community with Code
+                </Button>
+              </div>
+            ) : (
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Button
+                  size="lg"
+                  onClick={() => navigate('/login')}
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 h-12 text-base font-semibold"
+                >
+                  Member Login <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={handleDemoAccess}
+                  className="border-primary/30 text-primary hover:bg-primary/10 px-8 h-12 text-base"
+                >
+                  <Play className="mr-2 h-4 w-4" /> Try Demo
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => navigate('/request-access')}
+                  className="border-primary/30 text-primary hover:bg-primary/10 px-8 h-12 text-base"
+                >
+                  Request Membership
+                </Button>
+              </div>
+            )}
 
-            <p className="text-xs text-muted-foreground mt-4">
-              Demo credentials: <code className="text-primary/80 bg-primary/5 px-1.5 py-0.5 rounded">demo / demo123</code>
-            </p>
+            {!isAuthenticated && (
+              <p className="text-xs text-muted-foreground mt-4">
+                Demo credentials: <code className="text-primary/80 bg-primary/5 px-1.5 py-0.5 rounded">demo / demo123</code>
+              </p>
+            )}
           </motion.div>
         </div>
 
@@ -145,7 +168,7 @@ export default function LandingPage() {
             ].map((item, i) => (
               <motion.div
                 key={item.title}
-                className="glass-card p-6 text-center"
+                className="frosted-card p-6 text-center"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
@@ -206,7 +229,7 @@ export default function LandingPage() {
             {pastAdventures.map((event, i) => (
               <motion.div
                 key={event.id}
-                className="glass-card-hover overflow-hidden group cursor-default"
+                className="frosted-card-hover overflow-hidden group cursor-default"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
@@ -230,7 +253,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
 
       {/* Footer */}
       <footer className="border-t border-border/30 py-12 px-4">
