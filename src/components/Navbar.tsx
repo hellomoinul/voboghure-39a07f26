@@ -49,23 +49,21 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
   const showBack = shouldShowBack(location.pathname);
   const isAdmin = user?.role === 'admin';
 
-  // মেনু ক্লোজ করার লজিক
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
-      {/* Outside Click Fix: মেনুর বাইরে ক্লিক করলে বন্ধ হবে */}
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
+      {/* Outside Click Overlay: Non-blur background */}
       {mobileMenuOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black/5 backdrop-blur-[2px] md:hidden" 
+          className="fixed inset-0 z-40 bg-black/40 md:hidden" 
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
       <div className="flex h-16 items-center px-4 md:px-6 relative z-50">
-        {/* Back Button */}
         {showBack && (
           <button
             onClick={() => navigate(-1)}
@@ -77,14 +75,14 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
           </button>
         )}
 
-        {/* SINGLE MENU BUTTON: ডাবল হ্যামবার্গার সমস্যার সমাধান */}
+        {/* Single Menu Toggle Logic */}
         {!showBack && (
           <button
             onClick={() => {
               if (isAuthenticated && !isPublicRoute) {
-                onToggleSidebar?.(); // লগইন থাকলে মেইন সাইডবার টগল হবে
+                onToggleSidebar?.();
               } else {
-                setMobileMenuOpen(prev => !prev); // না থাকলে মোবাইল ড্রপডাউন মেনু খুলবে
+                setMobileMenuOpen(prev => !prev);
               }
             }}
             aria-label="Toggle menu"
@@ -95,7 +93,6 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
           </button>
         )}
 
-        {/* Logo */}
         <Link to={isAuthenticated ? '/dashboard' : '/'} className="flex items-center gap-2 mr-6">
           <span className="text-2xl leading-none">{brand.logo}</span>
           <span className="font-serif text-xl font-bold tracking-tight hidden sm:block">
@@ -103,7 +100,6 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
           </span>
         </Link>
 
-        {/* Desktop View Switcher & Nav */}
         {isAuthenticated && !isPublicRoute && (
           <div className="hidden md:block">
             <CommunitySwitcher />
@@ -137,27 +133,26 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
                   <button 
                     aria-label="User menu"
                     title="User menu"
-                    className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-secondary outline-none"
+                    className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-secondary outline-none focus:ring-2 focus:ring-primary/20"
                   >
                     <img 
                       src={user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name}`} 
-                      className="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20" 
+                      className="w-8 h-8 rounded-full object-cover ring-2 ring-border" 
                       alt="avatar"
                     />
                     <ChevronDown className="h-4 w-4 text-muted-foreground hidden sm:block" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-card shadow-xl">
-                  <div className="px-3 py-2 text-foreground">
+                {/* Profile Dropdown: Solid Background, No Transparency */}
+                <DropdownMenuContent align="end" className="w-56 bg-card border-border shadow-md opacity-100 z-60">
+                  <div className="px-3 py-2 border-b border-border/50">
                     <p className="text-sm font-semibold">{user?.name}</p>
                     <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
                   </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate(`/members/${user?.id}`)} className="cursor-pointer">
+                  <DropdownMenuItem onClick={() => navigate(`/members/${user?.id}`)} className="cursor-pointer mt-1">
                     <User className="mr-2 h-4 w-4" /> My Profile
                   </DropdownMenuItem>
                   
-                  {/* Admin Panel শুধুমাত্র এখানে থাকবে */}
                   {isAdmin && (
                     <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer text-primary font-medium">
                       <ShieldCheck className="mr-2 h-4 w-4" /> Admin Panel
@@ -165,7 +160,7 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
                   )}
                   
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => { logout(); navigate('/'); }} className="cursor-pointer text-destructive">
+                  <DropdownMenuItem onClick={() => { logout(); navigate('/'); }} className="cursor-pointer text-destructive focus:bg-destructive/10">
                     <LogOut className="mr-2 h-4 w-4" /> Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -179,21 +174,18 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Menu Dropdown: Solid Background, No Blur */}
       {!isAuthenticated && mobileMenuOpen && (
-        <nav className="md:hidden border-t border-border/50 bg-background px-4 py-4 space-y-2">
+        <nav className="md:hidden border-t border-border bg-background px-4 py-3 space-y-1 shadow-lg animate-in slide-in-from-top-1">
           {publicLinks.map(link => (
             <Link
               key={link.to}
               to={link.to}
-              className="block px-4 py-3 rounded-xl text-base font-medium hover:bg-secondary"
+              className="block px-4 py-3 rounded-lg text-base font-medium hover:bg-secondary transition-colors"
             >
               {link.label}
             </Link>
           ))}
-          <Button className="w-full mt-4" onClick={() => navigate('/login')}>
-            Login
-          </Button>
         </nav>
       )}
     </header>
