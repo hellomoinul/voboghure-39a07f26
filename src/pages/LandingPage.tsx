@@ -90,6 +90,14 @@ export default function LandingPage() {
               >
                 <Play className="mr-2 h-4 w-4" /> Try Demo
               </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => navigate('/request-access')}
+                className="border-primary/30 text-primary hover:bg-primary/10 px-8 h-12 text-base"
+              >
+                Request Membership
+              </Button>
             </div>
 
             <p className="text-xs text-muted-foreground mt-4">
@@ -224,57 +232,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Demo Access Section */}
-      <section className="py-16 md:py-24 px-4">
-        <div className="max-w-3xl mx-auto">
-          <motion.div
-            className="glass-card p-8 md:p-12 text-center relative overflow-hidden"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            custom={0}
-            variants={fadeUp}
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5" />
-            <div className="relative z-10">
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
-                <Play className="h-8 w-8 text-primary" />
-              </div>
-              <h2 className="font-serif text-3xl font-bold mb-3">Explore the Platform</h2>
-              <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-                Want to see what {brand.communityName} looks like from the inside? 
-                Try our demo mode with pre-loaded sample data. No sign-up required.
-              </p>
-              <div className="glass-card inline-block px-6 py-3 mb-6">
-                <p className="text-sm text-muted-foreground">Demo Credentials</p>
-                <p className="text-lg font-mono font-bold text-primary mt-1">
-                  demo / demo123
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Button
-                  size="lg"
-                  onClick={handleDemoAccess}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 px-8"
-                >
-                  <Play className="mr-2 h-4 w-4" /> Launch Demo
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => navigate('/request-access')}
-                  className="border-border text-foreground hover:bg-secondary"
-                >
-                  Request Membership
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground mt-4">
-                Demo access is read-only. No data can be modified.
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="border-t border-border/30 py-12 px-4">
