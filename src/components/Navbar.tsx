@@ -135,11 +135,7 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
-          ) : (
-            <Button variant="ghost" size="sm" onClick={() => navigate('/login')} className="text-muted-foreground hover:text-foreground">
-              Login
-            </Button>
-          )}
+          ) : null}
         </div>
       </div>
 
@@ -160,14 +156,6 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
               {link.label}
             </Link>
           ))}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => { setMobileMenuOpen(false); navigate('/login'); }}
-            className="w-full justify-start text-muted-foreground hover:text-foreground mt-1"
-          >
-            Login
-          </Button>
         </nav>
       )}
     </header>
