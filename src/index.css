@@ -1,8 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -264,10 +265,16 @@
     border-radius: inherit;
     padding: 1px;
     background: var(--gradient-accent);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.5;
+    /* ১. মাস্ক ডেফিনিশন (সব ব্রাউজারের জন্য) */
+-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+
+/* ২. কম্পোজিট লজিক (ব্রাউজার ভেদে আলাদা নাম) */
+-webkit-mask-composite: xor;   /* Chrome, Safari, Newer Edge */
+mask-composite: exclude;       /* Firefox, Standard spec compliance */
+
+/* ৩. সাধারণ স্টাইল */
+opacity: 0.5;
   }
 
   .text-bangla {
