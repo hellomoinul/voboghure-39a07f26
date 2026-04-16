@@ -6,7 +6,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { CommunitySwitcher } from '@/components/CommunitySwitcher';
 import NotificationBell from '@/components/NotificationBell';
 import { 
-  LogOut, User, ChevronDown, Menu, X 
+  LogOut, User, ChevronDown, Menu, X, ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,6 +27,19 @@ const publicLinks = [
   { to: '/about', label: 'About' },
 ];
 
+// Routes that should show a back button (sub-pages)
+const backButtonRoutes = [
+  '/about', '/request-access', '/forgot-password', '/update-password',
+  '/create-community', '/community-home',
+];
+
+function shouldShowBack(pathname: string): boolean {
+  if (backButtonRoutes.includes(pathname)) return true;
+  // Dynamic routes like /communities/:id, /events/:id, /stories/:id, /members/:id, /profile/:id
+  if (/^\/(communities|events|stories|members|profile)\/[^/]+$/.test(pathname)) return true;
+  return false;
+}
+
 export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
   const { user, isAuthenticated, logout } = useAuth();
   const { brand } = useBrand();
@@ -35,12 +48,24 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isPublicRoute = ['/', '/login', '/request-access', '/about'].includes(location.pathname);
+  const showBack = shouldShowBack(location.pathname);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="flex h-16 items-center px-4 md:px-6">
+        {/* Back button for sub-pages */}
+        {showBack && (
+          <button
+            onClick={() => navigate(-1)}
+            aria-label="Go back"
+            className="mr-2 p-2 rounded-lg hover:bg-secondary transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+        )}
+
         {/* Sidebar toggle for private routes */}
-        {isAuthenticated && !isPublicRoute && (
+        {isAuthenticated && !isPublicRoute && !showBack && (
           <button
             onClick={onToggleSidebar}
             aria-label="Toggle sidebar"
@@ -51,7 +76,7 @@ export function Navbar({ onToggleSidebar, sidebarOpen }: NavbarProps) {
         )}
 
         {/* Mobile menu toggle for public routes */}
-        {!isAuthenticated && (
+        {!isAuthenticated && !showBack && (
           <button
             onClick={() => setMobileMenuOpen(prev => !prev)}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
