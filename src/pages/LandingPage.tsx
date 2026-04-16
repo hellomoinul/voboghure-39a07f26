@@ -206,13 +206,12 @@ export default function LandingPage() {
             {pastAdventures.map((event, i) => (
               <motion.div
                 key={event.id}
-                className="glass-card-hover overflow-hidden group cursor-pointer"
+                className="glass-card-hover overflow-hidden group cursor-default"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
                 custom={i + 1}
                 variants={fadeUp}
-                onClick={handleDemoAccess}
               >
                 <div className="relative h-56 overflow-hidden">
                   <img
