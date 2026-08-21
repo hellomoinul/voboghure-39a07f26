@@ -17,7 +17,7 @@ export default function EventGallery({ eventId, userId }: { eventId: string, use
 
     // রিয়েল-টাইম লিসেনার
     const channel = supabase.channel(`gallery-${eventId}`)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'event_images', filter: `event_id=eq.${eventId}` }, 
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'event_gallery', filter: `event_id=eq.${eventId}` }, 
       (payload) => {
         setImages(prev => [payload.new, ...prev]);
       }).subscribe();

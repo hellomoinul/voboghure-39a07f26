@@ -67,15 +67,15 @@ export default function UserProfilePage() {
       <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-secondary/30 via-background to-background p-6 md:p-10 shadow-sm">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
           <Avatar className="h-32 w-32 md:h-40 md:w-40 border-4 border-background shadow-xl">
-            <AvatarImage src={userData.avatar_url} className="object-cover" />
+            <AvatarImage src={userData.avatar} className="object-cover" />
             <AvatarFallback className="text-4xl font-serif bg-primary text-primary-foreground">
-              {userData.full_name?.charAt(0)}
+              {userData.name?.charAt(0)}
             </AvatarFallback>
           </Avatar>
           
           <div className="flex-1 text-center md:text-left space-y-3">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{userData.full_name}</h1>
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{userData.name}</h1>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mt-2">
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
                    {userData.designation || 'Voboghure Explorer'}

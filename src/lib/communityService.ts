@@ -146,7 +146,7 @@ export const getLatestCommunityData = async (communityId: string) => {
   // ২. সাম্প্রতিক ৪টি স্টোরি আনা (মেম্বার ইনফো সহ)
   const { data: stories, error: storyError } = await supabase
     .from('stories')
-    .select('*, profiles(username, avatar_url)')
+    .select('*, profiles(name, avatar)')
     .eq('community_id', communityId)
     .order('created_at', { ascending: false })
     .limit(4);
@@ -220,8 +220,8 @@ export const getCommunityMembers = async (communityId: string) => {
       role,
       profiles:user_id (
         id,
-        full_name,
-        avatar_url,
+        name,
+        avatar,
         bio,
         designation
       )
@@ -408,7 +408,7 @@ export const uploadEventImage = async (eventId: string, userId: string, file: Fi
 
   // ডাটাবেসে ইনসার্ট
   const { error: dbError } = await supabase
-    .from('event_images')
+    .from('event_gallery')
     .insert([{ 
       event_id: eventId, 
       user_id: userId, 
@@ -422,8 +422,8 @@ export const uploadEventImage = async (eventId: string, userId: string, file: Fi
 // ২. কোনো ইভেন্টের সব ছবি নিয়ে আসা
 export const getEventImages = async (eventId: string) => {
   const { data, error } = await supabase
-    .from('event_images')
-    .select('*, profiles(full_name, avatar)')
+    .from('event_gallery')
+    .select('*, profiles(name, avatar)')
     .eq('event_id', eventId)
     .order('created_at', { ascending: false });
 

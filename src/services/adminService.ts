@@ -10,7 +10,7 @@ export const adminService = {
         role,
         joined_at,
         user_id,
-        profiles:user_id (id, full_name, avatar_url, name_bn),
+        profiles:user_id (id, name, avatar),
         communities:community_id (name)
       `)
       .eq('role', 'pending');

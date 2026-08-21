@@ -37,9 +37,9 @@ export default function ProfilePage() {
       
       const mappedUser = {
         id: userData.id,
-        name: userData.full_name || userData.name || '',
+        name: userData.name || '',
         nameBn: userData.name_bn || '', 
-        avatar: userData.avatar_url || userData.avatar || '',
+        avatar: userData.avatar || '',
         role: userData.role || 'Member',
         bio: userData.bio || '',
         joinedAt: userData.created_at || new Date().toISOString(),
@@ -55,7 +55,7 @@ export default function ProfilePage() {
       setUserStories(storiesData);
       
       setEditForm({ 
-        name: userData.full_name || userData.name || '', 
+        name: userData.name || '', 
         nameBn: userData.name_bn || '', 
         bio: userData.bio || '' 
       });
@@ -77,7 +77,7 @@ export default function ProfilePage() {
     try {
       setLoading(true);
       await updateProfile(profileUser.id, {
-        full_name: editForm.name,
+        name: editForm.name,
         name_bn: editForm.nameBn, 
         bio: editForm.bio
       });
@@ -103,7 +103,7 @@ export default function ProfilePage() {
     try {
       setUploading(true);
       const publicUrl = await uploadAvatar(profileUser.id, file);
-      await updateProfile(profileUser.id, { avatar_url: publicUrl });
+      await updateProfile(profileUser.id, { avatar: publicUrl });
       setProfileUser({ ...profileUser, avatar: publicUrl });
       toast.success("Avatar updated!");
     } catch (error) {

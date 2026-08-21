@@ -25,7 +25,7 @@ export default function MembersPage() {
   }, [activeCommunity?.id]);
 
   const filteredMembers = members.filter(m => 
-    m.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    m.profiles?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (isLoading) return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-primary" /></div>;
@@ -51,15 +51,15 @@ export default function MembersPage() {
             <Card className="overflow-hidden hover:border-primary/50 hover:shadow-md transition-all cursor-pointer h-full">
               <CardContent className="p-4 flex flex-col items-center text-center space-y-3">
                 <div className="h-20 w-20 rounded-full overflow-hidden bg-secondary border-2 border-transparent hover:border-primary/20 transition-all">
-                  {member.profiles?.avatar_url ? (
-                    <img src={member.profiles.avatar_url} alt={member.profiles.full_name} className="h-full w-full object-cover" />
+                  {member.profiles?.avatar ? (
+                    <img src={member.profiles.avatar} alt={member.profiles.name} className="h-full w-full object-cover" />
                   ) : (
                     <UserCircle className="h-full w-full text-muted-foreground/20" />
                   )}
                 </div>
                 <div>
                   <h3 className="font-semibold text-sm group-hover:text-primary transition-colors">
-                    {member.profiles?.full_name || "Anonymous"}
+                    {member.profiles?.name || "Anonymous"}
                   </h3>
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">{member.role}</p>
                 </div>

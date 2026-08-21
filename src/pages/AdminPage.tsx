@@ -159,9 +159,9 @@ export default function AdminPage() {
             requests.map(req => (
               <div key={req.id} className="p-4 flex flex-wrap items-center justify-between gap-4 hover:bg-white/[0.02] transition-colors">
                 <div className="flex items-center gap-3">
-                  <img src={(req as any).profiles?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${req.user_id}`} className="w-10 h-10 rounded-full object-cover border border-white/10" alt="" />
+                  <img src={(req as any).profiles?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${req.user_id}`} className="w-10 h-10 rounded-full object-cover border border-white/10" alt="" />
                   <div>
-                    <p className="font-bold text-sm">{(req as any).profiles?.full_name || 'Unknown Explorer'}</p>
+                    <p className="font-bold text-sm">{(req as any).profiles?.name || 'Unknown Explorer'}</p>
                     <p className="text-[10px] text-muted-foreground">Requested {new Date(req.created_at).toLocaleDateString()}</p>
                   </div>
                 </div>
@@ -187,10 +187,10 @@ export default function AdminPage() {
           {members.map(member => (
             <div key={member.id} className="p-4 flex flex-wrap items-center justify-between gap-4 hover:bg-white/[0.02]">
               <div className="flex items-center gap-3">
-                <img src={(member as any).profiles?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${member.user_id}`} className="w-10 h-10 rounded-full object-cover border border-white/10" alt="" />
+                <img src={(member as any).profiles?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${member.user_id}`} className="w-10 h-10 rounded-full object-cover border border-white/10" alt="" />
                 <div>
                   <p className="font-bold text-sm">
-                    {(member as any).profiles?.full_name || 'Member'} 
+                    {(member as any).profiles?.name || 'Member'} 
                     {member.user_id === user?.id && <span className="ml-2 text-[10px] bg-white/10 px-1.5 py-0.5 rounded italic">You</span>}
                   </p>
                   <div className="flex items-center gap-2 mt-0.5">
