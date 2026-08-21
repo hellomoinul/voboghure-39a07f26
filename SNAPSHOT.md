@@ -31,8 +31,8 @@
 
 - ✅ **0.1** Master DB migration — **DONE 21 Aug.** Fresh Supabase project `hojfkgjlemeqdkaddhif` (Singapore). 14 tables, RLS on all, triggers (profile-on-signup, join-request notifications, approval notifications, updated_at), buckets `event-gallery` + `avatars`, indexes. Two-level access: `join_requests` (platform, anon can apply) → `community_join_requests` (per-community). Stories fully public when `visibility='public'` (blog-style, anon readable). Events: manual status (`upcoming/ongoing/completed`). Code aligned: `event_images`→`event_gallery`, profiles `name/avatar`. Vercel env vars updated.
 - ✅ **0.2** Security fixes — `search_path` verified already set on all 3 triggers; storage policies applied to `event-gallery` + `avatars` buckets; RLS audit clean. *Leaked Password Protection skipped — requires Supabase paid plan.*
+- ✅ **0.4** Consolidation — **DONE 21 Aug.** Single Supabase client (`src/lib/supabase.ts`); deleted dead `src/integrations/supabase/` (client+types, zero importers) and `src/services/adminService.ts` (dead). `src/services/communityService.ts` merged into `src/lib/communityService.ts`. Service layer now: `lib/communityService.ts` (app data) + `lib/communityAdminService.ts` (admin ops).
 - ❌ **0.3** Google Photos link utility — shared input + preview-first + fallback card component
-- ❌ **0.4** Consolidate duplicate clients/services (2 Supabase clients → 1; 3 service files → per-domain)
 
 ---
 

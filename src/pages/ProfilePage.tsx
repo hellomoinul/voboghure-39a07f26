@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { StoryCard } from '@/components/StoryCard';
 import { Calendar, BookOpen, Camera, Mountain, Loader2, MapPin, Plus, X, Check, Edit3 } from 'lucide-react';
 import { User } from '@/types';
-import { getPublicProfile, getUserEventHistory, getUserStories, updateProfile, uploadAvatar } from '@/services/communityService';
+import { getPublicProfile, getUserEventHistory, getUserStories, updateProfile, uploadAvatar } from '@/lib/communityService';
 import { toast } from 'sonner';
 
 export default function ProfilePage() {
