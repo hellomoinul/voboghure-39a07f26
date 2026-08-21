@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useCommunity } from '@/contexts/CommunityContext'; // Context হুক ইম্পোর্ট
 import { 
   getPendingJoinRequests, 
-  handleJoinRequest, 
-  approveAndAddMember 
+  handleJoinRequest
 } from '@/lib/communityService';
+import { toast } from 'sonner';
 import { Check, X, Loader2, UserPlus, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function AdminRequestsPage() {
-  const { activeCommunity } = useCommunity(); // এখান থেকে activeCommunity নিচ্ছি
   const [requests, setRequests] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -26,29 +24,16 @@ export default function AdminRequestsPage() {
   }, []);
 
   const onAction = async (request: any, status: 'approved' | 'rejected') => {
-    // ১. কমিউনিটি আইডি চেক করা
-    if (!activeCommunity?.id) {
-      alert("No active community selected!");
-      return;
-    }
-
-    // ২. জয়েন রিকোয়েস্ট স্ট্যাটাস আপডেট করা
     const success = await handleJoinRequest(request.id, status);
-    
+
     if (success && status === 'approved') {
-      // ৩. অটো-মেম্বারশিপ লজিক কল করা
-      const result = await approveAndAddMember(request.email, activeCommunity.id);
-      
-      if (result.success) {
-        if (result.registered) {
-          alert(`${request.full_name} এখন মেম্বার হিসেবে অ্যাড হয়ে গেছেন!`);
-        } else {
-          alert(`রিকোয়েস্ট অ্যাপ্রুভ হয়েছে। ইউজার এখনো সাইন-আপ করেনি, তাই মেম্বার লিস্টে পরে ম্যানুয়ালি অ্যাড করতে হতে পারে।`);
-        }
-      }
+      toast.success(`${request.full_name} approved. Create their login via Supabase Dashboard > Authentication > Add User.`);
+    } else if (success) {
+      toast(`${request.full_name}'s request rejected.`);
+    } else {
+      toast.error('Something went wrong. Please try again.');
     }
 
-    // ৪. লিস্ট আপডেট করা
     setRequests(prev => prev.filter(r => r.id !== request.id));
   };
 
