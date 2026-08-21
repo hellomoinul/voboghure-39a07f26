@@ -6,7 +6,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Send, CheckCircle, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase'; // সুপাবেস ক্লায়েন্ট
-import { createNotification } from '@/lib/communityService';
 
 export default function RequestAccessPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -34,17 +33,6 @@ export default function RequestAccessPage() {
         }]);
 
       if (requestError) throw requestError;
-
-      // ২. এডমিনকে নোটিফিকেশন পাঠানো (হার্ডকোড বা ডাইনামিক এডমিন আইডি)
-      // নোট: এখানে আপনার এডমিন প্রোফাইল আইডি ব্যবহার করুন
-      await createNotification({
-        user_id: '86815982-f4d3-4672-9844-46b007559640', // আপনার এডমিন আইডি দিন
-        community_id: '86815982-f4d3-4672-9844-46b007559640', // অ্যাক্টিভ কমিউনিটি আইডি
-        title: 'New Join Request 🔔',
-        message: `${formData.name} has requested access to the community.`,
-        type: 'join_request',
-        link: '/admin/requests'
-      });
 
       setSubmitted(true);
     } catch (error) {
