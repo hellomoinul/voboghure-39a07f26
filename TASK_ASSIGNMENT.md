@@ -39,7 +39,7 @@ Everything below depends on these. No feature PRs until Phase 0 merges.
 | # | Task | Owner | Notes |
 |---|------|-------|-------|
 | 0.1 | **Master DB migration** — stories (event-linked + general, visibility modes), gallery items (event-based + general), events upgrade (status, participants), activity log, bookmarks, community lifecycle (`active/suspended/deleted`), `platform_admin` role, soft-delete flags (`deleted_at`) on all content tables | 🔵 Moinul | One migration set = single source of truth. Replaces dashboard-only schema |
-| 0.2 | **Security fixes** — `search_path` on 3 trigger functions, restrict `event-gallery` bucket + signed URLs, enable Leaked Password Protection, full RLS audit | 🔵 Moinul | From snapshot Priority 1 |
+| 0.2 | **Security fixes** — `search_path` on 3 trigger functions, restrict `event-gallery` bucket + signed URLs, enable Leaked Password Protection, full RLS audit | ✅ DONE | search_path already set; storage policies applied 21 Aug 2026; Leaked Password Protection skipped (paid plan) |
 | 0.3 | **Google Photos link utility** — shared component: link input + helper text ("Paste Google Photos link (make sure it's shareable)") + preview-first render + fallback link card | 🔵 Moinul | Structure §4. Used by Stories, Gallery, Events covers, avatars |
 | 0.4 | **Consolidate duplicate clients/services** — merge `lib/supabase.ts` + `integrations/supabase/client.ts`; merge 3 overlapping service files into one per domain | 🔵 Moinul | Structural cleanup before team scales |
 

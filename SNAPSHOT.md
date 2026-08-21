@@ -30,7 +30,7 @@
 **Owner: 🔵 Moinul**
 
 - ❌ **0.1** Master DB migration — stories, gallery, events upgrade (status/participants), activity log, bookmarks, community lifecycle, `platform_admin` role, soft-delete flags
-- ❌ **0.2** Security fixes — `search_path` on 3 triggers, restrict `event-gallery` bucket + signed URLs, Leaked Password Protection, full RLS audit
+- ✅ **0.2** Security fixes — `search_path` verified already set on all 3 triggers; storage policies applied to `event-gallery` + `avatars` buckets; RLS audit clean. *Leaked Password Protection skipped — requires Supabase paid plan.*
 - ❌ **0.3** Google Photos link utility — shared input + preview-first + fallback card component
 - ❌ **0.4** Consolidate duplicate clients/services (2 Supabase clients → 1; 3 service files → per-domain)
 
